@@ -1,0 +1,115 @@
+{% extends 'accounts/master.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <img src="{{ request.user.customer.profile_pic.url }}" alt="Фото профиля" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;" onerror="this.src='/media/profiles/default.jpg'">
+                </div>
+                <h5 class="card-title text-center">{{ request.user.customer.name }}</h5>
+                <p><strong>Email:</strong> {{ request.user.customer.email|default:"Не указан" }}</p>
+                <p><strong>Телефон:</strong> {{ request.user.customer.phone|default:"Не указан" }}</p>
+                <div class="text-center mt-3">
+                    <a href="{% url 'customers.customer_profile_setting' %}" class="btn btn-primary">Редактировать профиль</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card text-center text-white mb-3 bg-primary">
+                    <div class="card-header">
+                        <h5 class="card-title">Всего заказов</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{total_orders}}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center text-white mb-3 bg-success">
+                    <div class="card-header">
+                        <h5 class="card-title">Готовых</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{delivered}}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center text-white mb-3 bg-warning">
+                    <div class="card-header">
+                        <h5 class="card-title">В ожидании</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{pending}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Последние заказы</h5>
+                    {% if request.user.is_staff %}
+                    <div>
+                        <a href="{% url 'order.create' customer.id %}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Новый заказ
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Изделие</th>
+                                <th>Дата</th>
+                                <th>Статус</th>
+                                <th>Комментарий</th>
+                                {% if request.user.is_staff %}
+                                <th>Действия</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{order.product}}</td>
+                                <td>{{order.date_created|date:"d.m.Y H:i"}}</td>
+                                <td>
+                                    <span class="badge {% if order.status == 'Готов' %}bg-success{% elif order.status == 'В работе' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                        {{order.status}}
+                                    </span>
+                                </td>
+                                <td>{{order.note|default:"-"}}</td>
+                                {% if request.user.is_staff %}
+                                <td>
+                                    <a href="{% url 'order.update' order.id %}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Изменить
+                                    </a>
+                                    <a href="{% url 'order.delete' order.id %}" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Удалить
+                                    </a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">У вас пока нет заказов</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

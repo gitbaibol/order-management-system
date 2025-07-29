@@ -1,0 +1,108 @@
+{% extends 'accounts/master.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Информация о клиенте</h5>
+        <div class="text-center mb-3">
+          <img src="{{ customer.profile_pic.url }}" alt="Фото профиля" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover;" onerror="this.src='/media/profiles/default.jpg'">
+        </div>
+        <p><strong>Имя:</strong> {{ customer.name }}</p>
+        <p><strong>Телефон:</strong> {{ customer.phone|default:"Не указан" }}</p>
+        <p><strong>Email:</strong> {{ customer.email|default:"Не указан" }}</p>
+        <p><strong>Дата регистрации:</strong> {{ customer.date_created|date:"d.m.Y" }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title">Заказы клиента</h5>
+          {% if request.user.is_staff %}
+          <a href="{% url 'order.create' customer.id %}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Новый заказ
+          </a>
+          {% endif %}
+        </div>
+
+        <!-- Фильтры -->
+        <form method="GET" class="mb-4">
+          <div class="row g-3">
+            <div class="col-md-3">
+              {{ filterObj.form.start_date.label_tag }}
+              {{ filterObj.form.start_date }}
+            </div>
+            <div class="col-md-3">
+              {{ filterObj.form.end_date.label_tag }}
+              {{ filterObj.form.end_date }}
+            </div>
+            <div class="col-md-3">
+              {{ filterObj.form.status.label_tag }}
+              {{ filterObj.form.status }}
+            </div>
+            <div class="col-md-3">
+              {{ filterObj.form.product.label_tag }}
+              {{ filterObj.form.product }}
+            </div>
+            <div class="col-12">
+              {{ filterObj.form.note.label_tag }}
+              {{ filterObj.form.note }}
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Фильтровать
+              </button>
+              <a href="?" class="btn btn-secondary">Сбросить</a>
+            </div>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Изделие</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>Комментарий</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders %}
+              <tr>
+                <td>{{ order.product }}</td>
+                <td>{{ order.date_created|date:"d.m.Y H:i" }}</td>
+                <td>
+                  <span class="badge {% if order.status == 'Готов' %}bg-success{% elif order.status == 'В работе' %}bg-warning{% else %}bg-secondary{% endif %}">
+                    {{ order.status }}
+                  </span>
+                </td>
+                <td>{{ order.note|default:"-" }}</td>
+                <td>
+                  <a href="{% url 'order.update' order.id %}" class="btn btn-sm btn-primary">
+                    Изменить
+                  </a>
+                  <a href="{% url 'order.delete' order.id %}" class="btn btn-sm btn-danger">
+                    Удалить
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="text-center">У клиента пока нет заказов</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

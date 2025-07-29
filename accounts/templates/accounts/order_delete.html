@@ -1,0 +1,40 @@
+
+{% extends 'accounts/master.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">Удаление заказа</h5>
+                <div class="alert alert-danger mb-4">
+                    <p class="mb-0">
+                        Вы уверены, что хотите удалить заказ <br>
+                        <strong>"{{ order.product }}"</strong><br>
+                        клиента <strong>{{ order.customer.name }}</strong>?
+                    </p>
+                </div>
+                <div class="mb-2">
+                    <strong>Статус заказа:</strong> {{ order.status }}<br>
+                    <strong>Дата создания:</strong> {{ order.date_created|date:"d.m.Y H:i" }}
+                </div>
+                {% if order.note %}
+                    <div class="mb-3">
+                        <strong>Комментарий:</strong><br>
+                        {{ order.note }}
+                    </div>
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Да, удалить заказ</button>
+                        <a href="javascript:history.back()" class="btn btn-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

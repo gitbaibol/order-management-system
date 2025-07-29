@@ -1,0 +1,58 @@
+.order-form {
+    transition: all 0.3s ease;
+}
+
+.order-form:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.order-form .card {
+    border-radius: 8px;
+}
+
+.order-form .card-body {
+    padding: 1.25rem;
+}
+
+.remove-order {
+    transition: all 0.2s ease;
+}
+
+.remove-order:hover {
+    transform: scale(1.05);
+}
+
+#addOrderBtn {
+    transition: all 0.2s ease;
+}
+
+#addOrderBtn:hover {
+    transform: scale(1.05);
+}
+
+/* Style form controls */
+.order-form select,
+.order-form input,
+.order-form textarea {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+    padding: 0.375rem 0.75rem;
+    width: 100%;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.order-form select:focus,
+.order-form input:focus,
+.order-form textarea:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+}
+
+/* Style labels */
+.order-form label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #212529;
+}

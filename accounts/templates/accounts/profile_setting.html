@@ -1,0 +1,48 @@
+{% extends 'accounts/master.html' %}
+{% load widget_tweaks %}
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-4">Настройки профиля</h5>
+
+                    <div class="text-center mb-4">
+                        <img src="{{ request.user.customer.profile_pic.url }}" alt="Текущее фото профиля" 
+                             class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;"
+                             onerror="this.src='/media/profiles/default.jpg'">
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                        <div class="form-group mb-3">
+                            <label class="form-label">{{ field.label }}:</label>
+                            {% if field.name == 'profile_pic' %}
+                                {{ field|add_class:'form-control' }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            {% else %}
+                                {{ field|add_class:'form-control' }}
+                            {% endif %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                            <a href="{% url 'customers.customer_profile' %}" class="btn btn-secondary">Назад к профилю</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
